@@ -213,7 +213,7 @@
     }
 
     button {
-      min-width: 100px;
+      min-width: 70px;
       height: 30px;
       padding: 6px;
       background: orange;
@@ -295,7 +295,12 @@
       display: flex;
       align-items: flex-end;
       height: 150px;
+      overflow-x: auto;
       border-top: 1px solid #ccc
+    }
+
+    #chart>div {
+      margin-right: 4px;
     }
 
     #controls {
@@ -353,6 +358,8 @@
     </div>
     <div id="chart-container">
       <div id="chart-controls">
+        <button id="saveBtn">Save JSON</button><!-- NEW -->
+        <button id="fsBtn">⛶</button>
         <label>Interval: <span id="intervalDisplay">5</span>s</label>
         <input id="intervalSlider" type="range" min="1" max="10" value="5">
       </div>

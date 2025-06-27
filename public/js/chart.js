@@ -13,7 +13,20 @@ function startCapture () {
       parseInt(slider.value, 10) * 1000          // slider in seconds
   );
 }
+const saveBtn = document.getElementById('saveBtn');
 
+saveBtn.onclick = () => {
+  const blob = new Blob(
+      [JSON.stringify(snapshots, null, 2)],
+      { type: 'application/json' }
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'chart_data.json';
+  a.click();
+  URL.revokeObjectURL(url);
+};
 function captureSnapshot() {
   const total = latestPoints.length || 1;
   let likes = 0, dis = 0;
