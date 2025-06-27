@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:python": "cd crowd-detection && python prod.py --cam 0",
+    "start:python": "cd crowd-detection && python prod.py --cam 1",
     "start:express": "tsc-watch --onSuccess \"node ./dist/index.js\"",
     "start": "concurrently 'npm:start:python' 'npm:start:express'"
   },

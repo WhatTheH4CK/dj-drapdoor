@@ -13,7 +13,7 @@ function processAndRender() {
       a.history = a.history || [];
       a.history.push(pct);
       const avg = Math.round(a.history.reduce((u, v) => u + v, 0) / a.history.length);
-      a.div.querySelector(".sessionPercent").textContent = avg + "%";
+      a.div.querySelector(".sessionPercent").textContent = avg + "%" + ' ('+cnt+')';
     }
   });
 

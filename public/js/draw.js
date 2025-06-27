@@ -8,31 +8,31 @@ drawBtn.onclick = () => {
   drawBtn.disabled = true;
   canvas.style.pointerEvents = 'auto';
 };
-function resizeCanvas(){
-  const cw    = video.clientWidth,
-        ratio = frameHeight / frameWidth,
-        ch    = cw * ratio;
-  video.parentElement.style.height = ch + 'px';
-  canvas.width  = cw;
-  canvas.height = ch;
-  render();
-}
 
+function getCanvasPos(e) {
+  const r  = canvas.getBoundingClientRect();
+  const sx = canvas.width  / r.width;   // per-axis scale factors
+  const sy = canvas.height / r.height;
+  return {
+    x: (e.clientX - r.left) * sx,
+    y: (e.clientY - r.top)  * sy
+  };
+}
 video.onload = resizeCanvas;
 window.onresize = resizeCanvas;
 
 canvas.onclick = e => {
   if (!current) return;
-  const r = canvas.getBoundingClientRect(),
-        x = e.clientX - r.left,
-        y = e.clientY - r.top;
+  const { x, y } = getCanvasPos(e);
   tempPts.push({ x, y });
-  if (tempPts.length === 4) {
+
+  if (tempPts.length === 4) {          // rectangle finished
     current.points = tempPts.slice();
     areas.push(current);
     addAreaUI(current);
-    current = null;
-    tempPts = [];
+
+    current   = null;
+    tempPts   = [];
     previewPt = null;
     drawBtn.disabled = false;
     canvas.style.pointerEvents = 'none';
@@ -42,12 +42,12 @@ canvas.onclick = e => {
 
 canvas.onmousemove = e => {
   if (!current) return;
-  const r = canvas.getBoundingClientRect(),
-        x = e.clientX - r.left,
-        y = e.clientY - r.top;
-  previewPt = { x, y };
+  previewPt = getCanvasPos(e);
   render();
 };
+
+
+
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -63,8 +63,9 @@ function render() {
     ctx.beginPath();
     tempPts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
     if (previewPt) ctx.lineTo(previewPt.x, previewPt.y);
-    ctx.setLineDash([5, 5]);
-    ctx.strokeStyle = 'gray';
+    ctx.setLineDash([10, 10]);
+    ctx.lineWidth  = 3;          // thicker = easier to see
+    ctx.strokeStyle = 'orange';
     ctx.stroke();
     ctx.setLineDash([]);
   }
@@ -95,8 +96,38 @@ function pointInPoly(pt, poly) {
   }
   return inside;
 }
-function mapPoint(p){
-  // p = [x_px, y_px] in the resized-frame coordinate space (Wn×Hn)
-  const s = canvas.width / frameWidth;
-  return { x: p[0] * s, y: p[1] * s };
+function resizeCanvas() {
+  // Wait until the backend has sent frame size once
+  if (!frameWidth || !frameHeight) return;
+
+  const prevW = canvas.width  || 1;
+  const prevH = canvas.height || 1;
+
+  const cw    = video.clientWidth;
+  const ratio = frameHeight / frameWidth;
+  const ch    = cw * ratio;
+
+  // Rescale all saved geometry when the canvas changes size
+  if (prevW !== cw || prevH !== ch) {
+    const sx = cw / prevW;
+    const sy = ch / prevH;
+
+    areas.forEach(a =>
+      a.points.forEach(p => { p.x *= sx; p.y *= sy; })
+    );
+    tempPts.forEach(p => { p.x *= sx; p.y *= sy; });
+    if (previewPt) { previewPt.x *= sx; previewPt.y *= sy; }
+  }
+
+  video.parentElement.style.height = ch + 'px';
+  canvas.width  = cw;
+  canvas.height = ch;
+  render();
+}
+
+function mapPoint(p) {
+  return {
+    x: p[0] * (canvas.width  / frameWidth),
+    y: p[1] * (canvas.height / frameHeight)
+  };
 }
