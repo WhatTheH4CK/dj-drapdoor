@@ -1,0 +1,32 @@
+{
+  "name": "pycharmprojects",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:python": "cd crowd-detection && python prod.py --cam 0",
+    "start:express": "tsc-watch --onSuccess \"node ./dist/index.js\"",
+    "start": "concurrently 'npm:start:python' 'npm:start:express'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@fastify/http-proxy": "^11.3.0",
+    "concurrently": "^9.2.0",
+    "eventsource": "^4.0.0",
+    "express": "^5.1.0",
+    "fastify": "^5.4.0",
+    "fastify-http-proxy": "^6.2.2",
+    "fastify-sse-v2": "^4.2.1",
+    "http-proxy-middleware": "^3.0.5"
+  },
+  "devDependencies": {
+    "@types/eventsource": "^1.1.15",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.4",
+    "tsc-watch": "^7.1.1",
+    "typescript": "^5.8.3"
+  }
+}

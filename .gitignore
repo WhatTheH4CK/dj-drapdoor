@@ -1,0 +1,13 @@
+node_modules
+crowd-detection/__pycache__
+crowd-detection/.idea
+crowd-detection/.venv
+crowd-detection/dataset
+crowd-detection/models
+crowd-detection/node_modules
+crowd-detection/util
+crowd-detection/pretrained_model
+crowd-detection/prediction
+crowd-detection/logs
+crowd-detection/images
+crowd-detection/heatmap

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Live Feed with Session Timer & Chart</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+
+  <style>
+    /* Display */
+    .d-none {
+      display: none !important;
+    }
+
+    .d-inline {
+      display: inline !important;
+    }
+
+    .d-inline-block {
+      display: inline-block !important;
+    }
+
+    .d-block {
+      display: block !important;
+    }
+
+    .d-flex {
+      display: flex !important;
+    }
+
+    .d-inline-flex {
+      display: inline-flex !important;
+    }
+
+    /* Flex-direction & wrap */
+    .flex-row {
+      flex-direction: row !important;
+    }
+
+    .flex-row-reverse {
+      flex-direction: row-reverse !important;
+    }
+
+    .flex-column {
+      flex-direction: column !important;
+    }
+
+    .flex-column-reverse {
+      flex-direction: column-reverse !important;
+    }
+
+    .flex-wrap {
+      flex-wrap: wrap !important;
+    }
+
+    .flex-nowrap {
+      flex-wrap: nowrap !important;
+    }
+
+    /* Justify content */
+    .justify-content-start {
+      justify-content: flex-start !important;
+    }
+
+    .justify-content-end {
+      justify-content: flex-end !important;
+    }
+
+    .justify-content-center {
+      justify-content: center !important;
+    }
+
+    .justify-content-between {
+      justify-content: space-between !important;
+    }
+
+    .justify-content-around {
+      justify-content: space-around !important;
+    }
+
+    .justify-content-evenly {
+      justify-content: space-evenly !important;
+    }
+
+    /* Align items */
+    .align-items-start {
+      align-items: flex-start !important;
+    }
+
+    .align-items-end {
+      align-items: flex-end !important;
+    }
+
+    .align-items-center {
+      align-items: center !important;
+    }
+
+    .align-items-baseline {
+      align-items: baseline !important;
+    }
+
+    .align-items-stretch {
+      align-items: stretch !important;
+    }
+
+    /* Spacing scale: 0=0; 1=.25rem; 2=.5rem; 3=1rem; 4=1.5rem; 5=3rem; auto */
+    @for $i from 0 through 5 {
+      .m-#{$i} {
+        margin: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .p-#{$i} {
+        padding: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .mt-#{$i} {
+        margin-top: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .mb-#{$i} {
+        margin-bottom: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .ms-#{$i} {
+        margin-left: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .me-#{$i} {
+        margin-right: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .pt-#{$i} {
+        padding-top: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .pb-#{$i} {
+        padding-bottom: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .ps-#{$i} {
+        padding-left: (if($i, $i * .25rem, 0)) !important;
+      }
+
+      .pe-#{$i} {
+        padding-right: (if($i, $i * .25rem, 0)) !important;
+      }
+    }
+
+    .m-auto {
+      margin: auto !important;
+    }
+
+    .mx-auto {
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+
+    .my-0 {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* Width & height */
+    .w-25 {
+      width: 25% !important;
+    }
+
+    .w-50 {
+      width: 50% !important;
+    }
+
+    .w-75 {
+      width: 75% !important;
+    }
+
+    .w-100 {
+      width: 100% !important;
+    }
+
+    .w-auto {
+      width: auto !important;
+    }
+
+    .h-25 {
+      height: 25% !important;
+    }
+
+    .h-50 {
+      height: 50% !important;
+    }
+
+    .h-75 {
+      height: 75% !important;
+    }
+
+    .h-100 {
+      height: 100% !important;
+    }
+
+    .h-auto {
+      height: auto !important;
+    }
+
+
+
+    html,
+    body {
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex
+    }
+
+    button {
+      min-width: 100px;
+      height: 30px;
+      padding: 6px;
+      background: orange;
+      border-style: none;
+      border-radius: 30px;
+    }
+
+    input {
+      height: 30px;
+      background: #eee;
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    .w-100 {
+      width: 100%;
+    }
+
+    #controls label {
+      line-height: 1em;
+    }
+
+    #left {
+      width: 80%;
+      display: flex;
+      flex-direction: column
+    }
+
+    #sidebar {
+      width: 20%;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      background: #f7f7f7
+    }
+
+    #sidebar {
+      width: 20%;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      background: #f7f7f7
+    }
+
+    #video-container {
+      position: relative;
+      width: 100%;
+      height: auto
+    }
+
+    #video,
+    #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill
+    }
+
+    #chart div {
+      height: 100%
+    }
+
+    #overlay {
+      pointer-events: none
+    }
+
+    #chart-container {
+      padding: 10px;
+      box-sizing: border-box
+    }
+
+    #chart-controls {
+      margin-bottom: 5px
+    }
+
+    #chart {
+      display: flex;
+      align-items: flex-end;
+      height: 150px;
+      border-top: 1px solid #ccc
+    }
+
+    #controls {
+      margin-bottom: 10px
+    }
+
+    #controls button {
+      margin-right: 5px
+    }
+
+    #timer {
+      height: 50px;
+      font-size: 2rem;
+      font-weight: bold
+    }
+
+    .area-item {
+      margin-bottom: 10px;
+      padding: 5px;
+      background: #fff;
+      border: 1px solid #ccc
+    }
+
+    .area-item button {
+      margin-right: 5px
+    }
+
+    .selected {
+      font-weight: bold
+    }
+
+    #alarm,
+    #gotcha {
+      display: none;
+      padding: 10px;
+      margin-top: 5px;
+      color: #fff
+    }
+
+    #alarm {
+      background: red
+    }
+
+    #gotcha {
+      background: black
+    }
+  </style>
+</head>
+
+<body>
+  <div id="left">
+    <div id="video-container">
+      <img id="video" src="http://localhost:8000/video" alt="Live feed">
+      <canvas id="overlay"></canvas>
+    </div>
+    <div id="chart-container">
+      <div id="chart-controls">
+        <label>Interval: <span id="intervalDisplay">5</span>s</label>
+        <input id="intervalSlider" type="range" min="1" max="10" value="5">
+      </div>
+      <div id="chart"></div>
+    </div>
+  </div>
+  <div id="sidebar">
+    <div id="controls">
+      <div id="timer" class="w-100 text-center">00:00.00</div>
+      <div class="d-flex flex-row justify-content-center">
+        <button id="startBtn" class="m-4">Start</button>
+        <button id="pauseBtn" class="m-4">Pause</button>
+        <button id="resetBtn" class="m-4">Reset</button>
+      </div>
+      <br>
+      <label class="d-flex w-100 flex-column">
+        <div>Minimum number of Dislikes in %:</div>
+        <input style="flex:1" class="w-100" id="minPct" type="number" value="5" min="0" max="100">
+      </label>
+
+      <label class="d-flex w-100 flex-column">
+        <div>Critical mass of dislikes has to be at least x (min):</div>
+        <input style="flex:1" class="w-100" id="critDur" type="number" value="5" min="0" max="100">
+      </label>
+
+      <label class="d-flex w-100 flex-column">
+        <div>If critical mass is reached x (sec) till drapdoor opens:</div>
+        <input style="flex:1" class="w-100" id="countdownSec" type="number" value="60" min="1">
+      </label>
+
+      <div class="w-100" id="alarm">
+        <h1>Critical mass reached!</h1>
+        <h3>Countdown started: <span id="alarmTimer">00:00</span></h3>
+      </div>
+
+      <div id="gotcha">Gotcha!</div>
+    </div>
+    <hr>
+    <button id="drawBtn" class="w-100">Draw Area</button>
+    <div id="areas"></div>
+  </div>
+
+  <script src="/js/ui.js"></script>
+  <script src="/js/draw.js"></script>
+  <script src="/js/timer.js"></script>
+  <script src="/js/chart.js"></script>
+  <script src="/js/alarm.js"></script>
+  <script src="/js/sse.js"></script>
+</body>
+
+</html>
