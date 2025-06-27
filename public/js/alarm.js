@@ -19,7 +19,7 @@ function processAndRender() {
   ).length;
   const dislikePct = Math.round(disCount / total * 100);
   const minPct = +minPctInput.value;
-  const neededMs = +critDurIn.value * 60 * 1000;
+  const neededMs = +critDurIn.value * 1000;
 
   if (running && dislikePct >= minPct) {
     if (!critStart) critStart = Date.now();

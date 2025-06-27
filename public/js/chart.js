@@ -1,20 +1,17 @@
-const maxTimeSec = 30;
 let snapshots = [];
 
 slider.oninput = () => {
   intervalDisp.textContent = slider.value;
   if (running) startCapture();
 };
-
-function startCapture() {
+const maxTimeSec = Infinity;          // or just remove it
+function startCapture () {
   clearInterval(captureTimer);
-  snapshots = [];
-  renderChart();
-  captureSnapshot();
-  captureTimer = setInterval(() => {
-    if (elapsed / 1000 >= maxTimeSec) return clearInterval(captureTimer);
-    captureSnapshot();
-  }, parseInt(slider.value) * 1000);
+  if (!snapshots.length) captureSnapshot();      // keep existing data
+  captureTimer = setInterval(
+      captureSnapshot,
+      parseInt(slider.value, 10) * 1000          // slider in seconds
+  );
 }
 
 function captureSnapshot() {
